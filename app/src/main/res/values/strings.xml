@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="app_name">Baking App</string>
+
+
+    <string name="base_url">https://d17h27t6h515a5.cloudfront.net/</string>
+
+
+    <string name="details_1">Recipe Ingredients</string>
+
+    <string name="step">step</string>
+
+    <string name="vid">video</string>
+
+    <string name="current">current</string>
+
+</resources>
