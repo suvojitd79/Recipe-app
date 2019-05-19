@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.bakingapp.fragment.Fragment1;
+import com.example.bakingapp.model.Ingredient;
 import com.example.bakingapp.model.Step;
 
 import org.parceler.Parcel;
@@ -26,8 +27,11 @@ public class Details extends AppCompatActivity implements VideoTitleClick{
     private String STEP;
     private String VID;
     private List<Step> steps;
+    private List<Ingredient> ingredients;
     private Fragment1 fragment1;
     private String CURRENT;
+    private String INGREDIENT;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +41,13 @@ public class Details extends AppCompatActivity implements VideoTitleClick{
         STEP = getString(R.string.step);
         VID = getString(R.string.vid);
         CURRENT = getString(R.string.current);
+        INGREDIENT = getString(R.string.ingredient);
+
 
         if (getIntent().getParcelableExtra(STEP)!=null) {
 
             steps = Parcels.unwrap(getIntent().getParcelableExtra(STEP));
+            ingredients = Parcels.unwrap(getIntent().getParcelableExtra(INGREDIENT));
 
                 //once you get the data then call it
             getSupportFragmentManager()
@@ -59,6 +66,9 @@ public class Details extends AppCompatActivity implements VideoTitleClick{
 
     }
 
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
 
 
     @Override

@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
 
     private String STEP;
 
+    private String INGREDIENT;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
         ButterKnife.bind(this);
         BASE_URL = getString(R.string.base_url);
         STEP = getString(R.string.step);
+        INGREDIENT = getString(R.string.ingredient);
 
         int span = (int) getDP()/CONST;
 
@@ -170,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
         //Toast.makeText(this,String.valueOf(position),Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this,Details.class);
         intent.putExtra(STEP, Parcels.wrap(recipeCards.get(position).getSteps()));
+        intent.putExtra(INGREDIENT,Parcels.wrap(recipeCards.get(position).getIngredients()));
         startActivity(intent);
     }
 

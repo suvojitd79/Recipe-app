@@ -2,14 +2,17 @@ package com.example.bakingapp.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class Ingredient {
 
     @SerializedName("quantity")
-    private float quantity;
+    float quantity;
     @SerializedName("measure")
-    private String measure;
+    String measure;
     @SerializedName("ingredient")
-    private String ingredient;
+    String ingredient;
 
     public void setQuantity(float quantity) {
         this.quantity = quantity;

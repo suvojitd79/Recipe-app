@@ -188,7 +188,8 @@ public class Fragment2 extends Fragment implements View.OnClickListener {
                 simpleExoPlayer.seekTo(0);
 
 
-            }
+            }else
+                progressBar.setVisibility(View.VISIBLE);
 
 
             if (TextUtils.isEmpty(des))
