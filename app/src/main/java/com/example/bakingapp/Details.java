@@ -1,6 +1,7 @@
 package com.example.bakingapp;
 
 import android.content.Intent;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -95,6 +96,9 @@ public class Details extends AppCompatActivity implements VideoTitleClick{
                         .replace(R.id.frag2,fragment2)
                         .commit();
 
+                if (savedInstanceState!=null)
+                    showVideo(savedInstanceState.getInt(CURRENT));
+
             }
 
 
@@ -129,6 +133,33 @@ public class Details extends AppCompatActivity implements VideoTitleClick{
         }
 
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (current!=-1)
+            outState.putInt(CURRENT,current);
+
+    }
+
+
+    /*
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onRestoreInstanceState(savedInstanceState, persistentState);
+
+           if (savedInstanceState != null){
+               int pos = savedInstanceState.getInt(CURRENT,-1);
+               if (pos!=-1)
+                   showVideo(pos);
+
+           }
+
+    }
+
+    */
 
 
 }

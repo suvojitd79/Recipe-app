@@ -47,7 +47,13 @@ public class Fragment2 extends Fragment implements View.OnClickListener{
     private Context context;
     private int current = -1;
 
+    public int getCurrent() {
+        return current;
+    }
+
     private long time = 0;
+
+    private final String TAG = "d99";
 
     @Override
     public void onAttach(Context context) {
@@ -131,13 +137,19 @@ public class Fragment2 extends Fragment implements View.OnClickListener{
             }
         });
 
-
-
-
         if (context instanceof Video)
             render(((Video)context).current);
 
         return view;
+
+    }
+
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+
 
     }
 
@@ -293,6 +305,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener{
         }
 
     }
+
 
 
 

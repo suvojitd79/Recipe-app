@@ -83,37 +83,39 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
 
         makeNetworkCall();
 
-        flashView.setAlpha(1f);
-        flashView.setVisibility(View.VISIBLE);
-        flashView.animate()
-                .alpha(0.01f)
-                .setDuration(4000)
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
+
+            flashView.setAlpha(1f);
+            flashView.setVisibility(View.VISIBLE);
+            flashView.animate()
+                    .alpha(0.01f)
+                    .setDuration(4000)
+                    .setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
 
 
-                    }
+                        }
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
 
-                        flashView.setVisibility(View.GONE);
-                        data.setVisibility(View.VISIBLE);
+                            flashView.setVisibility(View.GONE);
+                            data.setVisibility(View.VISIBLE);
 
-                    }
+                        }
 
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
 
-                    }
+                        }
 
-                });
+                    });
+
 
 
         shareApp.setOnClickListener(new View.OnClickListener() {
@@ -211,5 +213,6 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
         startActivity(intent);
 
     }
+
 
 }
