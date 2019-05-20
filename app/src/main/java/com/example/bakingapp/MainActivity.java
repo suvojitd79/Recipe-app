@@ -3,6 +3,7 @@ package com.example.bakingapp;
 import android.animation.Animator;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -40,6 +41,9 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
 
     @BindView(R.id.data)
     LinearLayout data;
+
+    @BindView(R.id.shareApp)
+    FloatingActionButton shareApp;
 
     private String BASE_URL;
     private final String TAG = "d99";
@@ -112,6 +116,17 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
                 });
 
 
+        shareApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                share("Check out the new Recipe app!");
+
+            }
+
+        });
+
+
     }
 
     private double getDP(){
@@ -181,9 +196,20 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
     @Override
     public void share(int position) {
 
-
+            share(recipeCards.get(position).getName());
 
     }
 
+
+    private void share(String msg){
+
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Intent.EXTRA_TEXT,msg);
+        startActivity(intent);
+
+    }
 
 }

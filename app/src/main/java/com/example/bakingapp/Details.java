@@ -126,7 +126,6 @@ public class Details extends AppCompatActivity implements VideoTitleClick{
         }else{
             //tablet
             fragment2.render(position);
-
         }
 
     }

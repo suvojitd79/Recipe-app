@@ -12,14 +12,31 @@
 
         <LinearLayout
             android:id="@+id/data"
-            android:visibility="gone"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
 
-            <include
-                layout="@layout/toolbar" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize">
+
+                <include
+                    layout="@layout/toolbar" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/shareApp"
+                    android:layout_margin="5dp"
+                    android:layout_gravity="right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fabSize="mini"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:src="@drawable/ic_share_black_24dp"
+                    />
+
+            </FrameLayout>
+
 
 
             <android.support.v7.widget.RecyclerView
