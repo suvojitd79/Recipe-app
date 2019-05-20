@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +14,13 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.bakingapp.Details;
 import com.example.bakingapp.R;
 import com.example.bakingapp.Video;
 import com.example.bakingapp.model.Step;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
@@ -36,7 +35,9 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
-public class Fragment2 extends Fragment implements View.OnClickListener {
+import java.util.List;
+
+public class Fragment2 extends Fragment implements View.OnClickListener{
 
     private PlayerView playerView;
     private SimpleExoPlayer simpleExoPlayer;
@@ -164,7 +165,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener {
 
         //update
         current = position;
-
+        List<Step> steps;
 
         //mobile device
         if (context instanceof Video) {
@@ -172,7 +173,16 @@ public class Fragment2 extends Fragment implements View.OnClickListener {
             //Log.d("d99", "render: ");
 
             Video video = (Video) context;
-            Step step = video.getSteps().get(position);
+            steps = video.getSteps();
+
+        }else {
+
+            Details details = (Details) context;
+            steps = details.getSteps();
+
+        }
+            Step step = steps.get(position);
+
             String des = step.getDescription();
 
             String uri = step.getVideoURL();
@@ -198,7 +208,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener {
                 textView.setText(des);
 
             //last video
-            if (position + 1 == video.getSteps().size()) {
+            if (position + 1 == steps.size()) {
                 next.setEnabled(false);
                 next.setAlpha(.7f);
             } else {
@@ -218,7 +228,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener {
 
         }
 
-    }
+
 
 
     private void initMedia(){
@@ -283,4 +293,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener {
         }
 
     }
+
+
+
 }

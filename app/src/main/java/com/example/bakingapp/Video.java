@@ -43,13 +43,12 @@ public class Video extends AppCompatActivity {
 
             steps = Parcels.unwrap(getIntent().getParcelableExtra(VID));
             current = getIntent().getIntExtra(CURRENT,0);
-        }else
-            Toast.makeText(this,"kamacho",Toast.LENGTH_SHORT).show();
-
+        }
 
     }
 
     public List<Step> getSteps() {
         return steps;
     }
+
 }

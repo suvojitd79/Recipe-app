@@ -15,5 +15,8 @@
     <string name="current">current</string>
 
     <string name="ingredient">ingredients</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

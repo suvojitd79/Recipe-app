@@ -46,11 +46,12 @@
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="ssssssssssdd" />
+            android:text="No Item is selected" />
     </android.support.v4.widget.NestedScrollView>
 
 
     <Button
+        android:enabled="false"
         android:layout_margin="20sp"
         android:id="@+id/next"
         android:layout_width="wrap_content"
@@ -64,6 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
+        android:enabled="false"
         android:layout_margin="20sp"
         android:id="@+id/previous"
         android:layout_width="wrap_content"
