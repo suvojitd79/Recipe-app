@@ -1,8 +1,14 @@
 package com.example.bakingapp;
 
 import android.animation.Animator;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +23,9 @@ import android.widget.Toast;
 
 import com.example.bakingapp.model.RecipeCard;
 import com.example.bakingapp.model.Step;
+import com.google.gson.Gson;
 
+import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -31,7 +39,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements RecipeClick{
+public class MainActivity extends AppCompatActivity implements RecipeClick {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -60,6 +68,16 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
 
     private String INGREDIENT;
 
+    private String CURR = "curr";
+
+
+    private int current = -1; //default
+
+
+    //shared-preferences constant
+    public static final String SP = "sharedData";
+    public static final String SP_KEY = "sharedDataKey";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,52 +88,51 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
         STEP = getString(R.string.step);
         INGREDIENT = getString(R.string.ingredient);
 
-        int span = (int) getDP()/CONST;
+        int span = (int) getDP() / CONST;
 
-        double margin =  ((getDP() - span * CONST)*Resources.getSystem().getDisplayMetrics().density)/span;
+        double margin = ((getDP() - span * CONST) * Resources.getSystem().getDisplayMetrics().density) / span;
 
         //Log.d(TAG, "" + getDP());
 
 
-        adapter = new Adapter(margin,this);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,span));
+        adapter = new Adapter(margin, this);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, span));
         recyclerView.setAdapter(adapter);
 
         makeNetworkCall();
 
 
-            flashView.setAlpha(1f);
-            flashView.setVisibility(View.VISIBLE);
-            flashView.animate()
-                    .alpha(0.01f)
-                    .setDuration(4000)
-                    .setListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
+        flashView.setAlpha(1f);
+        flashView.setVisibility(View.VISIBLE);
+        flashView.animate()
+                .alpha(0.01f)
+                .setDuration(4000)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
 
 
-                        }
+                    }
 
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
 
-                            flashView.setVisibility(View.GONE);
-                            data.setVisibility(View.VISIBLE);
+                        flashView.setVisibility(View.GONE);
+                        data.setVisibility(View.VISIBLE);
 
-                        }
+                    }
 
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
 
-                        }
+                    }
 
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
 
-                        }
+                    }
 
-                    });
-
+                });
 
 
         shareApp.setOnClickListener(new View.OnClickListener() {
@@ -128,17 +145,25 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
 
         });
 
+        if (savedInstanceState!=null)
+            current = savedInstanceState.getInt(CURR);
+
+        Log.d(TAG, current+"");
+
+        SharedPreferences sharedPreferences = getSharedPreferences(SP,MODE_PRIVATE);
+      //  Toast.makeText(this,sharedPreferences.getString(SP_KEY,"no data yet!"),Toast.LENGTH_SHORT).show();
+
 
     }
 
-    private double getDP(){
+    private double getDP() {
 
-        return Math.ceil(Resources.getSystem().getDisplayMetrics().widthPixels/Resources.getSystem().getDisplayMetrics().density);
+        return Math.ceil(Resources.getSystem().getDisplayMetrics().widthPixels / Resources.getSystem().getDisplayMetrics().density);
 
     }
 
 
-    private void makeNetworkCall(){
+    private void makeNetworkCall() {
 
         Retrofit retrofit =
                 new Retrofit.Builder().
@@ -159,16 +184,16 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
             @Override
             public void onResponse(Call<List<RecipeCard>> call, Response<List<RecipeCard>> response) {
 
-                    if (response.isSuccessful()) {
-                        recipeCards = response.body();
-                        adapter.setRecipeCards(recipeCards);
-                    }
+                if (response.isSuccessful()) {
+                    recipeCards = response.body();
+                    adapter.setRecipeCards(recipeCards);
+                }
             }
 
             @Override
             public void onFailure(Call<List<RecipeCard>> call, Throwable t) {
 
-                Log.d(TAG, t+"");
+                Log.d(TAG, t + "");
 
             }
 
@@ -187,30 +212,73 @@ public class MainActivity extends AppCompatActivity implements RecipeClick{
     @Override
     public void showDetails(int position) {
 
+
+        //save the data
+        current = position; //update
+        saveData(current);
+
+        // Toast.makeText(this,String.valueOf(position),Toast.LENGTH_SHORT).show();
+
+
         //Toast.makeText(this,String.valueOf(position),Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this,Details.class);
+        Intent intent = new Intent(this, Details.class);
         intent.putExtra(STEP, Parcels.wrap(recipeCards.get(position).getSteps()));
-        intent.putExtra(INGREDIENT,Parcels.wrap(recipeCards.get(position).getIngredients()));
+        intent.putExtra(INGREDIENT, Parcels.wrap(recipeCards.get(position).getIngredients()));
         startActivity(intent);
+
     }
 
 
     @Override
     public void share(int position) {
 
-            share(recipeCards.get(position).getName());
+        share(recipeCards.get(position).getName());
 
     }
 
 
-    private void share(String msg){
+    private void share(String msg) {
 
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Intent.EXTRA_TEXT,msg);
+        intent.putExtra(Intent.EXTRA_TEXT, msg);
         startActivity(intent);
+
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(CURR,current);
+
+        //save the data
+        saveData(current);
+    }
+
+    private void saveData(int position) {
+
+        if (position == -1) return;
+
+        Gson gson = new Gson();
+        SharedPreferences sharedPreferences = getSharedPreferences(SP, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String data = gson.toJson(recipeCards.get(position).getIngredients());
+        editor.putString(SP_KEY, data);
+        editor.apply();
+
+
+        //update the app-widget
+
+        Intent intent = new Intent(this,RecipeWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int[] ids = AppWidgetManager.getInstance(getApplication())
+                    .getAppWidgetIds(new ComponentName(getApplication(),RecipeWidget.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+        sendBroadcast(intent);
 
     }
 
