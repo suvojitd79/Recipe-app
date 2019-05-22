@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,13 +48,25 @@ public class Fragment2 extends Fragment implements View.OnClickListener{
     private Context context;
     private int current = -1;
 
+
+    private boolean clickNP = false;
+
     public int getCurrent() {
         return current;
     }
 
+    public SimpleExoPlayer getSimpleExoPlayer() {
+        return simpleExoPlayer;
+    }
+
     private long time = 0;
+    private final String TIME = "time";
 
     private final String TAG = "d99";
+
+    public long getTime() {
+        return time;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -137,28 +150,26 @@ public class Fragment2 extends Fragment implements View.OnClickListener{
             }
         });
 
+        if (savedInstanceState!=null) {
+            time = savedInstanceState.getLong(TIME);
+            Log.d(TAG, "sa- "+ savedInstanceState.getLong(TIME));
+        }
+
         if (context instanceof Video)
-            render(((Video)context).current);
+            render(((Video) context).current);
 
         return view;
 
     }
 
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-
-
-
-    }
 
 
     @Override
     public void onClick(View v) {
 
         int id = v.getId();
-
+        clickNP = true;
 
         if (id == R.id.next) {
             current += 1;
@@ -174,6 +185,8 @@ public class Fragment2 extends Fragment implements View.OnClickListener{
 
 
     public void render(int position) {
+
+        Log.d(TAG, "i'm getting called...");
 
         //update
         current = position;
@@ -207,8 +220,13 @@ public class Fragment2 extends Fragment implements View.OnClickListener{
 
 
                 simpleExoPlayer.setPlayWhenReady(true);
-                simpleExoPlayer.seekTo(0);
 
+                Log.d(TAG, "render Me: " + time);
+
+                if (!clickNP)
+                    simpleExoPlayer.seekTo(Video.current_time);
+                else
+                    simpleExoPlayer.seekTo(0);
 
             }else
                 progressBar.setVisibility(View.VISIBLE);
@@ -284,6 +302,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener{
         if (simpleExoPlayer!=null){
 
             if (!simpleExoPlayer.getPlayWhenReady()) {
+                Log.d(TAG, "onResume: ->" + time);
                 simpleExoPlayer.seekTo(time);
                 simpleExoPlayer.setPlayWhenReady(true);
             }
@@ -306,7 +325,17 @@ public class Fragment2 extends Fragment implements View.OnClickListener{
 
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    /*
+        if(simpleExoPlayer!=null)
+            outState.putLong(TIME,simpleExoPlayer.getCurrentPosition());
+*/
+
+    }
 
 
-
+    
+    
 }

@@ -25,6 +25,10 @@ public class Video extends AppCompatActivity {
     private List<Step> steps;
     private String VID,CURRENT;
     public static int current = -1;
+    public static long current_time = 0;
+
+    private final String P="pos",T="time";
+
     private String TAG = "d99";
 
     @Override
@@ -44,7 +48,9 @@ public class Video extends AppCompatActivity {
         if (savedInstanceState!=null){
 
 
-            current = savedInstanceState.getInt("pos");
+            current = savedInstanceState.getInt(P);
+            current_time = savedInstanceState.getLong(T);
+
             Log.d(TAG, "savedInstanceState " + current);
 
         }
@@ -69,8 +75,12 @@ public class Video extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //store the data
-        outState.putInt("pos",fragment2.getCurrent());
-        Log.d(TAG, "onSave() " + fragment2.getCurrent());
+        outState.putInt(P,fragment2.getCurrent());
+        outState.putLong(T,fragment2.getSimpleExoPlayer().getCurrentPosition());
+
+        Log.d(TAG, "onSave()" + outState.getLong(T,0L));
+
+
     }
 
 
